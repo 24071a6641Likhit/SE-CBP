@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Timetable CSV Row",
+  "description": "One row from timetable CSV. Header MUST match the college period time slots exactly. Imports abort on any validation error.",
+  "type": "object",
+  "required": [
+    "Day",
+    "10:00-11:00",
+    "11:00-12:00",
+    "12:00-13:00",
+    "13:00-13:40",
+    "13:40-14:40",
+    "14:40-15:40",
+    "15:40-16:40"
+  ],
+  "properties": {
+    "Day": {
+      "type": "string",
+      "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    },
+    "10:00-11:00": { "type": ["string", "null"], "description": "Subject code or empty" },
+    "11:00-12:00": { "type": ["string", "null"], "description": "Subject code or empty" },
+    "12:00-13:00": { "type": ["string", "null"], "description": "Subject code or empty" },
+    "13:00-13:40": { "type": ["string", "null"], "description": "Lunch slot: may contain 'LUNCH' or be empty" },
+    "13:40-14:40": { "type": ["string", "null"] },
+    "14:40-15:40": { "type": ["string", "null"] },
+    "15:40-16:40": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false,
+  "x-import": {
+    "headers": ["Day","10:00-11:00","11:00-12:00","12:00-13:00","13:00-13:40","13:40-14:40","14:40-15:40","15:40-16:40"],
+    "periodMap": {
+      "10:00-11:00": 1,
+      "11:00-12:00": 2,
+      "12:00-13:00": 3,
+      "13:00-13:40": 0,
+      "13:40-14:40": 4,
+      "14:40-15:40": 5,
+      "15:40-16:40": 6
+    },
+    "abortOnError": true,
+    "timezone": "college-local (configure at import)"
+  }
+}

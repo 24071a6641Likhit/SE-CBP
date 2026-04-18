@@ -1,0 +1,415 @@
+openapi: 3.0.3
+info:
+  title: College Event Attendance Coordination API
+  version: 1.0.0
+  description: API for the College Event Attendance Coordination System (MVP)
+servers:
+  - url: https://api.example.com
+    description: Production server (replace during deployment)
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+    ApiError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Short machine-readable error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          description: Optional structured details
+    ImportResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        processed_rows:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              message:
+                type: string
+    LetterCreateRequest:
+      type: object
+      required: [student_roll, student_name, event_name, start_datetime, end_datetime]
+      properties:
+        student_roll:
+          type: string
+        student_name:
+          type: string
+        event_name:
+          type: string
+        start_datetime:
+          type: string
+          description: Local naive datetime string from `input type="datetime-local"` (format: YYYY-MM-DDTHH:MM)
+          example: "2026-04-11T12:00"
+        end_datetime:
+          type: string
+          description: Local naive datetime string from `input type="datetime-local"` (format: YYYY-MM-DDTHH:MM)
+          example: "2026-04-11T13:00"
+        body:
+          type: string
+    Letter:
+      allOf:
+        - $ref: '#/components/schemas/LetterCreateRequest'
+        - type: object
+          properties:
+            id:
+              type: string
+            submitted_at:
+              type: string
+              format: date-time
+            status:
+              type: string
+              enum: [Submitted, Approved, Rejected]
+            coordinator_comment:
+              type: string
+    ApproveResponse:
+      type: object
+      properties:
+        letter_id:
+          type: string
+        affected_periods:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              period_index:
+                type: integer
+    AttendanceRecord:
+      type: object
+      properties:
+        id:
+          type: string
+        student_roll:
+          type: string
+        date:
+          type: string
+          format: date
+        period_index:
+          type: integer
+        mark:
+          type: string
+          enum: [Present, Absent]
+        source:
+          type: string
+          enum: [Manual, SystemAuto]
+        updated_by:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+paths:
+  /api/auth/login:
+    post:
+      summary: Login and receive a JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/import/roster:
+    post:
+      summary: Upload roster CSV (Maintainer only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+        '400':
+          description: Import error (row-level details)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+  /api/import/timetable:
+    post:
+      summary: Upload timetable CSV (Maintainer only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+  /api/import/teachers:
+    post:
+      summary: Upload teacher mapping CSV (Maintainer only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportResponse'
+  /api/letters:
+    post:
+      summary: Student submits a letter
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LetterCreateRequest'
+      responses:
+        '201':
+          description: Letter created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Letter'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+    get:
+      summary: Query letters (Coordinator)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of letters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Letter'
+  /api/letters/{id}:
+    get:
+      summary: Get a letter
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Letter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Letter'
+  /api/letters/{id}/approve:
+    post:
+      summary: Approve a letter (Coordinator)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Approval applied, returns affected periods
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApproveResponse'
+        '409':
+          description: Conflict (e.g., approval already applied)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /api/letters/{id}/reject:
+    post:
+      summary: Reject a letter (Coordinator)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+      responses:
+        '200':
+          description: Rejected
+  /api/attendance:
+    get:
+      summary: Get attendance for a date and period (Teacher)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: date
+          required: true
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: period
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Attendance list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttendanceRecord'
+    post:
+      summary: Bulk update attendance (Teacher)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                updates:
+                  type: array
+                  items:
+                    type: object
+                    required: [student_roll, date, period_index, mark]
+                    properties:
+                      student_roll:
+                        type: string
+                      date:
+                        type: string
+                        format: date
+                      period_index:
+                        type: integer
+                      mark:
+                        type: string
+                        enum: [Present, Absent]
+                      version:
+                        type: integer
+      responses:
+        '200':
+          description: Update applied
+        '409':
+          description: Version conflict
+  /api/health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+security:
+  - bearerAuth: []

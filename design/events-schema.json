@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Realtime Event Envelope",
+  "type": "object",
+  "required": ["type", "id", "payload"],
+  "properties": {
+    "id": { "type": "string", "description": "Unique event id (UUID)" },
+    "type": { "type": "string", "description": "Event type e.g. letter.created" },
+    "published_at": { "type": "string", "format": "date-time" },
+    "payload": { "type": "object" },
+    "requires_ack": { "type": "boolean", "default": false }
+  },
+  "definitions": {
+    "letterCreated": {
+      "type": "object",
+      "required": ["letter_id","student_roll","submitted_at"],
+      "properties": {
+        "letter_id": { "type": "string" },
+        "student_roll": { "type": "string" },
+        "submitted_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "letterApproved": {
+      "type": "object",
+      "required": ["letter_id","affected_periods"],
+      "properties": {
+        "letter_id": { "type": "string" },
+        "approved_by": { "type": "string" },
+        "approved_at": { "type": "string", "format": "date-time" },
+        "affected_periods": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string", "format": "date" },
+              "period_index": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    "attendanceUpdated": {
+      "type": "object",
+      "required": ["date","period_index","changes"],
+      "properties": {
+        "date": { "type": "string", "format": "date" },
+        "period_index": { "type": "integer" },
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "student_roll": { "type": "string" },
+              "old": { "type": "string" },
+              "new": { "type": "string" },
+              "actor": { "type": "string" },
+              "ts": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-protocol": {
+    "transport": "websocket",
+    "ack_model": "client MUST send ack message of form {\"type\":\"ack\", \"id\":\"<event id>\"} when requires_ack=true; server will retry delivery until ack received or TTL expires.",
+    "subscription_model": "Server assigns subscriptions based on authenticated user's role and taught periods/subjects."
+  }
+}

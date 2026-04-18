@@ -1,0 +1,27 @@
+%% Mermaid sequence diagram for core flows
+%% Save as design/sequence-diagrams.mmd
+
+sequenceDiagram
+  participant StudentUI as Student UI
+  participant Backend
+  participant CoordinatorUI as Coordinator UI
+  participant TeacherUI as Teacher UI
+  participant DB
+  StudentUI->>Backend: POST /api/letters (letter data)
+  Backend->>DB: validate & insert letter (status=Submitted)
+  DB-->>Backend: OK
+  Backend-->>CoordinatorUI: emit letter.created (WS)
+  CoordinatorUI->>Backend: POST /api/letters/{id}/approve
+  Backend->>DB: set letter.status=Approved, approved_at, approved_by
+  Backend->>DB: compute affected periods (event->period mapping)
+  Backend->>DB: upsert attendance_records for affected periods (mark=Present, source=SystemAuto)
+  DB-->>Backend: OK
+  Backend-->>TeacherUI: emit attendance.updated (requires_ack=true)
+  TeacherUI-->>Backend: ack (event id)
+  TeacherUI->>Backend: optionally POST /api/attendance (teacher edits) with version
+  Backend->>DB: optimistic-update attendance_records (check version)
+  DB-->>Backend: OK
+  Backend->>DB: insert audit_log entries for all changes
+  DB-->>Backend: OK
+  Backend-->>StudentUI: notify status change (Submitted->Approved)
+

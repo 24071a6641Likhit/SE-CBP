@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Teacher Mapping CSV Row",
+  "description": "One row from teacher mapping CSV. Header MUST be exactly: `Subject,Teacher Name`. Imports abort on any validation error.",
+  "type": "object",
+  "required": ["Subject", "Teacher Name"],
+  "properties": {
+    "Subject": { "type": "string", "minLength": 1 },
+    "Teacher Name": { "type": "string", "minLength": 1 }
+  },
+  "additionalProperties": false,
+  "x-import": {
+    "headers": ["Subject", "Teacher Name"],
+    "abortOnError": true
+  }
+}

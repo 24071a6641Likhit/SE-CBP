@@ -1,0 +1,431 @@
+INFO:     Started server process [10531]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58502 - "POST /api/auth/login HTTP/1.1" 200 OK
+letter.created 8ea208c6-4f78-4a82-ad05-888203e81666 student=24071A6601
+INFO:     127.0.0.1:58508 - "POST /api/letters HTTP/1.1" 201 Created
+INFO:     127.0.0.1:54710 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54724 - "POST /api/import/roster HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:54728 - "POST /api/import/teachers HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54730 - "POST /api/import/timetable HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54736 - "POST /api/auth/login HTTP/1.1" 200 OK
+letter.created 5a08b630-0a24-42ec-b199-0bff61fc18a2 student=24071A6601
+INFO:     127.0.0.1:54752 - "POST /api/letters HTTP/1.1" 201 Created
+INFO:     127.0.0.1:54762 - "POST /api/auth/login HTTP/1.1" 200 OK
+letter.approved 5a08b630-0a24-42ec-b199-0bff61fc18a2 affected=[{'date': '2026-04-11', 'period_index': 3}]
+INFO:     127.0.0.1:54778 - "POST /api/letters/5a08b630-0a24-42ec-b199-0bff61fc18a2/approve HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54792 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54796 - "GET /api/attendance?date=2026-04-11&period=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39348 - "POST /api/auth/login HTTP/1.1" 200 OK
+letter.created 53d94742-24b4-469a-9754-f1c8f3d714de student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 646491b5-3dce-4264-ad22-31a354ab8488 student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created dde89a67-bd09-491e-809b-04be2459ea06 student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 89dd717f-7c56-44ed-9ba7-035e9a1e8331 student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 7e1f5de7-df17-415b-bc78-4ea7d3e29a07 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created dfad8062-a66b-4b48-999f-e24b53445313 student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a0749702-dad9-473b-8db2-6eb8f029d5ba student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9a212173-f6ec-4d94-be73-816dc824970e student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created d637537c-b4e0-4437-8f16-f8f703ed29a1 student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 84a8a52d-825e-4494-aa77-965bba5dfd9d student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created f4cc4e2d-2fae-4271-8f72-2bec88a9909e student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e864ff16-dab3-4201-b17e-9ce982e5974c student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a11a0a4c-cfa4-466a-a103-2a6cebffca99 student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 77c00893-c610-4736-9f0b-e052f3436597 student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created de1fc87d-68a9-4bc6-8535-3a5044ff6718 student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created d8fc4510-9456-46cc-a142-66ff0e422eec student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 286dffab-959f-45ba-8932-1ae74f7e76d5 student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created b58456bd-77f6-46ec-8a63-121449ad95bc student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 435697fa-d003-4f0e-8231-87849fe82acf student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9c67e9e7-eec8-4604-a473-093e454c477f student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 87dd2c70-b947-4ccc-be94-0aefa3d3645b student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 07dcae3f-df31-42a0-b578-6209829c87c3 student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 81d9770d-cec4-45f2-b7a6-88eb5527e839 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5cea47dd-f301-41a3-af10-50abca190170 student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 21f34389-e4c2-4664-aa18-adf968a43377 student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ef59869f-47b0-4ff4-892e-d2c7d2107d85 student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 554b7271-2e6b-411b-94a0-1fc3a190eed1 student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9007a75c-3b24-4d15-ab2d-c25015a00a44 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created cd467805-9c4f-427d-8cf7-82bcecd0760e student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 2339b99e-7c05-43d2-8d2f-62e018da730c student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created d7214471-6d34-45be-9696-21db49534891 student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5f8a89e8-0e42-45a4-a38c-d4e7fc1ceb03 student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 725f34cf-caad-4528-b517-39b2b77e8402 student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a2a863a2-6a34-4da3-97db-2d0e29ddb243 student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 708a1298-0575-49a1-ae4f-d45caf05cb2d student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 67070227-2309-4092-928e-ef46e29b38c2 student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 32b71034-3d79-40e0-8879-0f90b95953a5 student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 7a2d52a2-600f-478b-bcdb-1fca198a3596 student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 0e768261-d490-404a-b784-af69836ad50c student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 3c95d200-033c-4fea-b970-02ed92d55762 student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5681c08c-1368-4d8b-b6da-cbea49267691 student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created d0666d7b-cf86-4b1b-929b-f61cbe03ff77 student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a4ba4f07-6b97-42d7-97b8-b74e3618d709 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 56492dea-4d49-4c61-a553-dcc7984d3573 student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ee81dc72-18c4-41aa-a3fa-14b2ecea06a1 student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 889ecd9a-6444-470c-b378-0f81fd12d23e student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created bfbc0ad0-8ec3-464e-b170-e20c116c4668 student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created be371360-32e7-4264-8865-2c71c8c881e2 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 314aff29-9614-4b31-a65b-681d881c89ea student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 67275961-f927-4d70-a839-b10a92681f46 student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e12e1981-9a99-4952-9a52-55d6023b13a3 student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 6b5a9b25-ae8b-4e49-94e0-6021f72620f0 student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 891b37e2-5ba9-4176-8fc7-4add1237d033 student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 8ba7cb8d-2e1d-48ab-b3e0-5bdc9cec94ee student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e418db6f-efe9-4b72-a468-3af6f749a50b student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created f414bff8-a133-4639-8882-42046c5d934d student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 770e3369-f1cc-4ef1-822b-961281674827 student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a949973c-3253-40f6-b797-5778145de928 student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created d168499c-c43d-491c-9724-58baf0c2a1bb student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created bc88b94b-0249-4f03-9296-b17b3dec7570 student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created cdfc4e55-b2cd-4807-b0c8-6f9687fe1507 student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 845e374c-cb0e-4b9a-b00f-30b27bc98848 student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 8c380cd4-c297-4be9-8850-af994483320f student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e1aa28f3-e6ba-48da-9977-867ccef097c2 student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 29cd0502-17c7-4c46-8f13-e86fc58d9f2a student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 96bb0dfe-4da0-4f86-8b48-4d34864fcdd0 student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created dd1bcd29-c80a-45b8-91d0-805db7aababd student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a1dd0d2f-1d3b-4ea7-94d3-bff5958fe95a student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 8c18e99e-a69e-49a8-b12b-181115eb0f2a student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ff994b69-9f60-46aa-a09f-2d30f1ab4bb1 student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 36343043-fe21-4187-8bb1-94dd03c9ae19 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 0e0ac359-644e-4485-a23a-13593b6645f4 student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 08955727-ca71-407a-8d19-e708be60227d student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 3b2ffba3-0ba7-4ecc-83f1-736b9cd3df09 student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created c4f33028-7c99-46ed-a8b8-ed3616b03c1d student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 494c239e-e811-442e-8825-b24996b1dc78 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 327a1829-6eb2-4c5c-a7a0-cc857118eeab student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 4eaef319-26b3-443b-8a7d-a74c2eedbb4a student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9d854950-f80d-49df-8ed4-70c4868ce1d4 student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 45318fb8-82b5-449c-9e0f-d583f9c6df19 student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 462105b8-32f4-434f-8f0f-894c0a97da7c student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created b402d0b0-4640-4d62-a892-6856f2a4bb50 student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 0659e522-5643-40cc-a63c-7c3d5fd43dfb student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 8c6da140-4903-4666-8de3-8b48335c9727 student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created df03d1b4-83d8-4c91-b8b1-ec9fb7d75861 student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 4ec15cf5-098d-4f68-86ca-9310b0439f1d student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a292792c-10e9-4d8d-8e75-1ac15e5513b6 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e676c805-36b5-4fa6-96c5-100750425563 student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 2795e93f-3778-43f2-8874-1e9eaf2edb15 student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created bba6996c-5ed7-4fb0-ab71-72eea858ed17 student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 1faeaac2-e543-4149-ac03-e1074668791b student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e55bd3aa-dfdd-4e3c-8617-5e493c19118f student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created cf104ebd-9c73-44d6-a8a3-1069fee2aa3b student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 4f7e0bca-1e13-4c95-b50c-a46173a02f0a student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created b2f15a11-3c26-4596-b606-a65920637223 student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 67239e3f-006f-49f7-b630-20a00db565c6 student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created f98844bb-4a97-409d-93dc-18ed767254f1 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 576a0dc8-77bd-4435-a5e0-a21a8eded216 student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5c64648d-7a9e-4132-9a32-52a51047d193 student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 4b7c2f30-70d6-46b8-89e9-d76aa4c50684 student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5f3e6757-9915-47dc-b01b-3ebba7c57422 student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 12721e0d-7071-4cf8-926c-19c48b4a7032 student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ca5f724b-bab4-4c79-952c-666b5730b8f0 student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e28b33e6-d219-4fac-9478-aec5ff359ed6 student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created d039fb69-f1b7-4dde-9ffe-efbd87ca5e8a student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 25a09f9e-3aff-4054-b230-0992fac59a01 student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a3190616-b703-42ff-a6e8-fb54efa845aa student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 856fa1f3-eb21-4706-bb56-22b9c4ba93b2 student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ea7bf85d-51f0-41e4-9c5f-7ad731c5260f student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created aaba7e3b-e96f-4369-bb53-047bd8f27077 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created d7b19b6a-f2d3-4910-8022-9fd0b7552fa7 student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created fd91f85b-a785-41f8-8f1f-d0a1648e14ee student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5521a755-4a91-4869-bc84-d25216750982 student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 70efc41f-46dc-412c-9e11-8c4bc8011e62 student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 62dc1848-f295-40a8-9293-b315bfb252e1 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created b9ed2a8d-f58a-41c2-b9de-63717e2c7e7e student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created b205b2f3-cb56-41f4-9ffd-1fd91f86c449 student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ca41d4b9-2741-404b-b6f8-1a6a0088e072 student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e8edfde8-3459-4954-a650-9d3445bba27a student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 17ce8610-4e78-4df4-ac42-ba1a8d3f0bc1 student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created cf0ef232-c14f-4ab2-b25f-f5d56138749e student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 4ae34538-fa55-469d-a427-2d03db65d3e2 student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9bd3a8f5-9f4c-4b50-b5df-a570df59c4ed student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 683fdebb-1a5e-450f-a132-8b9f6afd8943 student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 21334905-2a3d-4cab-8e83-66e9202b2c3a student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 6de6c63c-ca58-41fb-aa71-25664af3b9e2 student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 84a09c38-1b53-4d82-810f-a3590abb1c8c student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created c3bb2e76-78c4-4e50-ac17-7ec603d084c3 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 234eb4ad-94f8-4c50-ac27-ce23ab2f4d08 student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 385d0c84-d1a6-4e60-aaf0-98535f34abc6 student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e1041848-581f-4437-a2c5-4af2c5320cca student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ca7edd78-e512-4906-ae52-bc44acf1b0fa student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 61a12812-5e20-409f-ac07-288046d2099e student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 613ebab8-abd3-4531-91fc-1cacb7c5a391 student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 0ed32b4d-d763-4024-a73c-85da3fb784db student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5f47de54-d3a0-4e9f-b3d9-1a0a5c5fe61b student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e3421508-cc28-480f-a856-e4b86b83c8df student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 8e4e9818-6995-4691-925f-a4d39b332f75 student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 84045fd5-4b4a-4533-a558-cf48f6a15cc6 student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 959b8eac-3565-4427-84f9-1a56437976b8 student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 77a583e0-9ca2-45b1-93f3-6c7e73881824 student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 995dba44-9b37-43ec-a5f3-5047b3a0f8c0 student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created fd6d4466-c32e-4e09-ac96-8466347283cf student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 073a97a9-5513-4b2c-9438-014d2afffae9 student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 836f31f5-44dd-4c8a-a8f1-04d63ef34329 student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9edb801a-7a10-4309-94e4-2e1fe1772dd5 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 95195817-f54c-4a9e-85ef-de01375956f0 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a879eb16-7544-4a0f-93ae-0239be03582f student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 8b907fd1-7ad7-4570-b5cc-8787da949de1 student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ff43293d-d91c-49a0-852d-ecdfdd30204c student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 57b6f4ec-20f6-4370-9c8f-444703b4866b student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 54ddf56f-0fc6-4eac-bc09-c719722bf58f student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 476c3a90-4e35-4dbd-a56a-e1bb5f3005ee student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 117f2680-3647-44fb-9c38-705829674a77 student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 1a046e2b-4357-4cb5-94db-334393184c23 student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created dfd7e383-8587-4914-b6e1-d7c08c550ead student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 59e3ec8b-4b18-4e56-9405-3ae3e4a21943 student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ffb42c43-91a0-4157-95ba-79e6025a46c1 student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 377fe0cb-5403-45fd-b562-3bc277915410 student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 2fa4f5ad-3620-4974-81c3-2f162e0d9069 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 7ede3c06-fa94-4fdc-8236-de19876ff1e9 student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created ab0c71f7-e557-4b1d-8e2e-fb54d702ca01 student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created dc563a2e-450c-4ef0-a029-b93d82f49226 student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e585721a-9c60-4574-892b-0b60e9207331 student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created de8352d1-79a2-4ea1-b260-6dc84bcd1912 student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 846b65c4-728c-4105-b83e-a6d24e2ef391 student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 39315c58-0736-4f4b-a1a5-3b6710db8416 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created adc1f40f-f454-436a-bf29-c17829037288 student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created bbdbdd43-7c25-4ca4-8420-33aa4b26c2a5 student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 77d45399-a968-4aec-bde8-3c4352c93ef9 student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 450fb1ed-b3b8-4003-b1f1-76366034de2b student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created f22b3748-0d15-432d-b126-7f92de225bdb student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9fd634ff-2883-48b0-b603-5c92c16d00bf student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created baea0f8c-255f-448d-b6bf-c0678aac2be6 student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created e9bcfee2-2e2e-4996-8676-9b14148562eb student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5f7c6e38-d08e-4e05-95ab-e77c9d5229fd student=24071A6601
+INFO:     127.0.0.1:39384 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created cf08cac9-9ac1-4714-8b92-0e9331b1bb51 student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a41eff8f-fa2f-436d-90bb-a4913630d25a student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 474773cf-ec00-43d5-a603-573eb43b0b4b student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 5ca3bcf9-82bb-4c6c-9aef-776ee0bc99e0 student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created bdd07915-2da9-4bbd-a2a3-335c50aa4b0a student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created cfe251ac-9a0c-4b51-87e7-7a226a36f7f9 student=24071A6601
+INFO:     127.0.0.1:39398 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 23cbbfbb-b53d-4c52-be9c-292509dad971 student=24071A6601
+INFO:     127.0.0.1:39358 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created c4c06506-546a-484e-959b-3f6366a3d032 student=24071A6601
+INFO:     127.0.0.1:39510 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 2130963e-2374-4513-9fb6-d68b6f1e8ab3 student=24071A6601
+INFO:     127.0.0.1:39408 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 0da37715-2886-4a39-be77-7aa175b57cdd student=24071A6601
+INFO:     127.0.0.1:39364 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created a2f7e9b4-6d58-4a6c-9648-fe7a67cf604c student=24071A6601
+INFO:     127.0.0.1:39374 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9432f48a-9ae5-433e-9e2a-6c7e1b557f1c student=24071A6601
+INFO:     127.0.0.1:39422 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 9f476770-e917-4bb6-88a5-adc81c26e8bf student=24071A6601
+INFO:     127.0.0.1:39450 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 40594f7f-94b7-4f25-a8a5-0dcda87cabb5 student=24071A6601
+INFO:     127.0.0.1:39488 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 7d9ac947-0c07-41b1-ac06-2722337ec551 student=24071A6601
+INFO:     127.0.0.1:39494 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 4f76a5e1-221b-4a13-953b-2a7bafe8689b student=24071A6601
+INFO:     127.0.0.1:39476 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 0dfcfba2-b53e-4eb6-bc40-e7c0f565199e student=24071A6601
+INFO:     127.0.0.1:39428 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 6856a23c-d52e-4202-b3a1-dc571ed86443 student=24071A6601
+INFO:     127.0.0.1:39460 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 641cc113-0b30-4add-ae97-f6803ec5f434 student=24071A6601
+INFO:     127.0.0.1:39352 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 2dd70865-26f5-44f8-81cf-a4d1817935cc student=24071A6601
+INFO:     127.0.0.1:39468 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 877917e6-4dc7-4e34-bfa0-de83f6f56849 student=24071A6601
+INFO:     127.0.0.1:39506 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created 6a6b5423-7aca-410f-8b25-a54722805a33 student=24071A6601
+INFO:     127.0.0.1:39466 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created d6b80bbd-8c7d-45d3-b37c-3c7c620ce920 student=24071A6601
+INFO:     127.0.0.1:39442 - "POST /api/letters HTTP/1.1" 201 Created
+letter.created b91452da-91cb-4c45-a1b0-80d6ac65a4c9 student=24071A6601
+INFO:     127.0.0.1:39388 - "POST /api/letters HTTP/1.1" 201 Created
+INFO:     127.0.0.1:53356 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54832 - "POST /api/auth/login HTTP/1.1" 200 OK
+letter.created 02dbb851-48ef-440f-972c-60f77331a9a0 student=24071A6601
+INFO:     127.0.0.1:46938 - "POST /api/letters HTTP/1.1" 201 Created
+INFO:     127.0.0.1:40486 - "POST /api/letters HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:42998 - "POST /api/letters HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:36852 - "POST /api/letters HTTP/1.1" 400 Bad Request
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [10531]

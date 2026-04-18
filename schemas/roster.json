@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Roster CSV Row",
+  "description": "One row from roster CSV. Header MUST be exactly: `Roll Number,Name`. Imports abort on any validation error.",
+  "type": "object",
+  "required": ["Roll Number", "Name"],
+  "properties": {
+    "Roll Number": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique roll identifier as provided by college (no leading/trailing whitespace).",
+      "pattern": "^[A-Za-z0-9_.-]+$"
+    },
+    "Name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Student full name."
+    }
+  },
+  "additionalProperties": false,
+  "x-import": {
+    "headers": ["Roll Number", "Name"],
+    "uniqueKey": "Roll Number",
+    "abortOnError": true,
+    "encoding": "utf-8"
+  }
+}
