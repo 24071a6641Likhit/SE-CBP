@@ -1,13 +1,43 @@
 import React, {useState, useEffect} from 'react'
 
+const ACTION_QUEUE_KEY = 'coordinator_action_queue_v1'
+
+function readQueue() {
+  try {
+    const raw = localStorage.getItem(ACTION_QUEUE_KEY)
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch (_err) {
+    return []
+  }
+}
+
+function writeQueue(items) {
+  localStorage.setItem(ACTION_QUEUE_KEY, JSON.stringify(items))
+}
+
 export default function CoordinatorPage({token}){
   const [letters,setLetters] = useState([])
   const [err,setErr] = useState(null)
+  const [statusFilter,setStatusFilter] = useState('Submitted')
+  const [rollFilter,setRollFilter] = useState('')
+  const [fromDate,setFromDate] = useState('')
+  const [toDate,setToDate] = useState('')
+  const [syncStatus,setSyncStatus] = useState('Synced')
+
+  function buildQuery(){
+    const q = new URLSearchParams()
+    if(statusFilter) q.set('status', statusFilter)
+    if(rollFilter.trim()) q.set('roll', rollFilter.trim())
+    if(fromDate) q.set('date_from', fromDate)
+    if(toDate) q.set('date_to', toDate)
+    return q.toString()
+  }
 
   async function load(){
     setErr(null)
     try{
-      const res = await fetch('/api/letters?status=Submitted', {headers:{'Authorization': `Bearer ${token}`}})
+      const res = await fetch(`/api/letters?${buildQuery()}`, {headers:{'Authorization': `Bearer ${token}`}})
       const j = await res.json()
       if(!res.ok) throw new Error(JSON.stringify(j))
       setLetters(j)
@@ -16,13 +46,89 @@ export default function CoordinatorPage({token}){
     }
   }
 
-  useEffect(()=>{load()}, [])
+  async function runAction(action){
+    if(action.type === 'approve'){
+      const res = await fetch(`/api/letters/${action.letterId}/approve`, {method:'POST', headers:{'Authorization': `Bearer ${token}`}})
+      const j = await res.json()
+      if(!res.ok) throw new Error(JSON.stringify(j))
+      return
+    }
+    if(action.type === 'reject'){
+      const res = await fetch(`/api/letters/${action.letterId}/reject`, {
+        method:'POST',
+        headers:{'Authorization': `Bearer ${token}`, 'Content-Type':'application/json'},
+        body: JSON.stringify({comment: action.comment || null}),
+      })
+      const j = await res.json()
+      if(!res.ok) throw new Error(JSON.stringify(j))
+    }
+  }
+
+  async function flushQueue(){
+    if(!navigator.onLine) return
+    const queued = readQueue()
+    if(!queued.length){
+      setSyncStatus('Synced')
+      return
+    }
+    setSyncStatus(`Syncing ${queued.length} queued action(s)...`)
+    const remaining = []
+    for(const action of queued){
+      try{
+        await runAction(action)
+      }catch(_err){
+        remaining.push(action)
+      }
+    }
+    writeQueue(remaining)
+    setSyncStatus(remaining.length ? `${remaining.length} queued action(s) pending` : 'Synced')
+    await load()
+  }
+
+  useEffect(()=>{
+    load()
+    flushQueue().catch(()=>{})
+
+    const onOnline = ()=>{ flushQueue().catch(()=>{}) }
+    window.addEventListener('online', onOnline)
+    const poll = setInterval(()=>{ load() }, 20000)
+
+    const wsProto = window.location.protocol === 'https:' ? 'wss' : 'ws'
+    const ws = new WebSocket(`${wsProto}://${window.location.host}/ws?token=${encodeURIComponent(token)}`)
+    ws.onmessage = (evt) => {
+      try{
+        const msg = JSON.parse(evt.data)
+        if(msg?.requires_ack && msg?.id){
+          ws.send(JSON.stringify({type:'ack', id: msg.id}))
+        }
+        if(msg?.type === 'letter.created' || msg?.type === 'letter.approved' || msg?.type === 'letter.rejected'){
+          load()
+        }
+      }catch(_err){
+        // ignore malformed ws messages
+      }
+    }
+
+    return ()=>{
+      window.removeEventListener('online', onOnline)
+      clearInterval(poll)
+      ws.close()
+    }
+  }, [token])
+
+  useEffect(()=>{ load() }, [statusFilter, rollFilter, fromDate, toDate])
 
   async function approve(id){
     try{
-      const res = await fetch(`/api/letters/${id}/approve`, {method:'POST', headers:{'Authorization': `Bearer ${token}`}})
-      const j = await res.json()
-      if(!res.ok) throw new Error(JSON.stringify(j))
+      if(!navigator.onLine){
+        const queued = readQueue()
+        queued.push({type:'approve', letterId: id})
+        writeQueue(queued)
+        setSyncStatus(`${queued.length} queued action(s) pending`)
+        alert('Offline: approval queued')
+        return
+      }
+      await runAction({type:'approve', letterId: id})
       load()
       alert('Approved')
     }catch(e){alert('Error: '+e)}
@@ -31,9 +137,15 @@ export default function CoordinatorPage({token}){
   async function reject(id){
     const comment = prompt('Rejection comment (optional)')
     try{
-      const res = await fetch(`/api/letters/${id}/reject`, {method:'POST', headers:{'Authorization': `Bearer ${token}`, 'Content-Type':'application/json'}, body: JSON.stringify({comment})})
-      const j = await res.json()
-      if(!res.ok) throw new Error(JSON.stringify(j))
+      if(!navigator.onLine){
+        const queued = readQueue()
+        queued.push({type:'reject', letterId: id, comment})
+        writeQueue(queued)
+        setSyncStatus(`${queued.length} queued action(s) pending`)
+        alert('Offline: rejection queued')
+        return
+      }
+      await runAction({type:'reject', letterId: id, comment})
       load()
       alert('Rejected')
     }catch(e){alert('Error: '+e)}
@@ -42,7 +154,27 @@ export default function CoordinatorPage({token}){
   return (
     <div>
       <h2>Coordinator — Inbox</h2>
-      <button onClick={load}>Refresh</button>
+      <div className="form-inline" style={{marginBottom:12}}>
+        <label>Status
+          <select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}>
+            <option value="">All</option>
+            <option value="Submitted">Submitted</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </label>
+        <label>Roll
+          <input value={rollFilter} onChange={e=>setRollFilter(e.target.value)} placeholder="24071A66xx" />
+        </label>
+        <label>From
+          <input type="date" value={fromDate} onChange={e=>setFromDate(e.target.value)} />
+        </label>
+        <label>To
+          <input type="date" value={toDate} onChange={e=>setToDate(e.target.value)} />
+        </label>
+        <button onClick={load}>Refresh</button>
+      </div>
+      <div className="note">Sync status: {syncStatus}</div>
       {err && <div className="error">{err}</div>}
       <table className="table">
         <thead><tr><th>Roll</th><th>Name</th><th>Event</th><th>Start</th><th>End</th><th>Actions</th></tr></thead>

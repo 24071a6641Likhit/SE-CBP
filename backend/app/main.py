@@ -111,6 +111,14 @@ class ApproveResponse(BaseModel):
     affected_periods: List[dict]
 
 
+class MeResponse(BaseModel):
+    user_id: str
+    username: str
+    role: str
+    student_roll: Optional[str] = None
+    student_name: Optional[str] = None
+
+
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     from jose import JWTError
     try:
@@ -204,6 +212,24 @@ def get_current_period(now_dt: Optional[datetime] = None):
 @app.get("/api/health")
 def health():
     return {"status": "healthy"}
+
+
+@app.get("/api/me", response_model=MeResponse)
+def get_me(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    student_roll = None
+    student_name = None
+    if current_user.role == "student":
+        st = db.query(models.Student).filter_by(user_id=current_user.id).first()
+        if st:
+            student_roll = st.roll_number
+            student_name = st.name
+    return {
+        "user_id": current_user.id,
+        "username": current_user.username,
+        "role": current_user.role,
+        "student_roll": student_roll,
+        "student_name": student_name,
+    }
 
 
 @app.post("/api/auth/login", response_model=LoginResponse)
@@ -404,7 +430,23 @@ async def import_timetable(file: UploadFile = File(...), db: Session = Depends(g
 
 @app.post("/api/letters", status_code=201)
 async def create_letter(body: LetterCreateRequest, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
-    student = db.query(models.Student).filter_by(roll_number=body.student_roll).first()
+    if current_user.role not in ("student", "coordinator", "maintainer"):
+        raise HTTPException(status_code=403, detail="Only student/coordinator/maintainer can create letters")
+
+    requested_roll = body.student_roll
+    requested_name = body.student_name
+    if current_user.role == "student":
+        linked_student = db.query(models.Student).filter_by(user_id=current_user.id).first()
+        if not linked_student:
+            raise HTTPException(status_code=403, detail="Student account is not linked to a roster entry")
+        if requested_roll and requested_roll != linked_student.roll_number:
+            raise HTTPException(status_code=400, detail="Student not found in roster")
+        if requested_name and requested_name.strip() and requested_name.strip() != linked_student.name:
+            raise HTTPException(status_code=400, detail="Student not found in roster")
+        requested_roll = linked_student.roll_number
+        requested_name = linked_student.name
+
+    student = db.query(models.Student).filter_by(roll_number=requested_roll).first()
     if not student:
         raise HTTPException(status_code=400, detail="Student not found in roster")
     try:
@@ -427,7 +469,15 @@ async def create_letter(body: LetterCreateRequest, db: Session = Depends(get_db)
     if not affected:
         # include parsed datetimes to help debug client/server timezone/format mismatches
         raise HTTPException(status_code=400, detail={"message": "Event does not overlap any college period", "start": start_dt.isoformat(), "end": end_dt.isoformat()})
-    letter = models.Letter(student_roll=body.student_roll, student_name=body.student_name, event_name=body.event_name, content=body.body if hasattr(body, 'body') else None, start_datetime=start_dt, end_datetime=end_dt, status="Submitted")
+    letter = models.Letter(
+        student_roll=requested_roll,
+        student_name=requested_name,
+        event_name=body.event_name,
+        content=body.body if hasattr(body, 'body') else None,
+        start_datetime=start_dt,
+        end_datetime=end_dt,
+        status="Submitted",
+    )
     db.add(letter)
     db.commit()
     db.refresh(letter)
@@ -510,12 +560,34 @@ async def debug_broadcast(payload: dict, db: Session = Depends(get_db), current_
 
 
 @app.get("/api/letters")
-def list_letters(status: Optional[str] = None, limit: int = 100, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+def list_letters(
+    status: Optional[str] = None,
+    roll: Optional[str] = None,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
     # Coordinator: list all (optionally filtered by status)
     if current_user.role == "coordinator":
         q = db.query(models.Letter)
         if status:
             q = q.filter(models.Letter.status == status)
+        if roll:
+            q = q.filter(models.Letter.student_roll == roll)
+        if date_from:
+            try:
+                start_day = date.fromisoformat(date_from)
+            except Exception:
+                raise HTTPException(status_code=400, detail="Invalid date_from, use YYYY-MM-DD")
+            q = q.filter(models.Letter.submitted_at >= datetime.combine(start_day, time.min))
+        if date_to:
+            try:
+                end_day = date.fromisoformat(date_to)
+            except Exception:
+                raise HTTPException(status_code=400, detail="Invalid date_to, use YYYY-MM-DD")
+            q = q.filter(models.Letter.submitted_at <= datetime.combine(end_day, time.max))
         rows = q.order_by(models.Letter.submitted_at.desc()).limit(limit).all()
     elif current_user.role == "student":
         st = db.query(models.Student).filter_by(user_id=current_user.id).first()

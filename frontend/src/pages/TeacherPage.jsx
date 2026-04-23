@@ -1,5 +1,21 @@
 import React, {useState, useEffect} from 'react'
 
+const SAVE_QUEUE_KEY = 'teacher_attendance_queue_v1'
+
+function readQueue() {
+  try {
+    const raw = localStorage.getItem(SAVE_QUEUE_KEY)
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch (_err) {
+    return []
+  }
+}
+
+function writeQueue(items) {
+  localStorage.setItem(SAVE_QUEUE_KEY, JSON.stringify(items))
+}
+
 export default function TeacherPage({token}){
   const [date,setDate] = useState(new Date().toISOString().slice(0,10))
   const [period,setPeriod] = useState(3)
@@ -7,22 +23,109 @@ export default function TeacherPage({token}){
   const [msg,setMsg] = useState(null)
   const [currentInfo,setCurrentInfo] = useState(null)
   const [nowTime,setNowTime] = useState(new Date())
+  const [syncStatus,setSyncStatus] = useState('Synced')
+  const [notifications,setNotifications] = useState([])
+
+  async function loadCurrentInfo(){
+    try{
+      const res = await fetch('/api/current_period', {headers:{'Authorization': `Bearer ${token}`}})
+      if(!res.ok) return
+      const j = await res.json()
+      setCurrentInfo(j)
+      if(j && j.period) setPeriod(j.period)
+    }catch(_e){
+      // ignore
+    }
+  }
+
+  async function runSave(payload){
+    const res = await fetch('/api/attendance', {
+      method:'POST',
+      headers:{'Authorization': `Bearer ${token}`, 'Content-Type':'application/json'},
+      body: JSON.stringify(payload),
+    })
+    let j = null
+    try{ j = await res.json() }catch(_err){ j = null }
+    if(!res.ok){
+      const detail = j && (j.detail || j.message) ? (j.detail || j.message) : (j || 'Unknown error')
+      const message = typeof detail === 'object' ? JSON.stringify(detail) : String(detail)
+      const err = new Error(message)
+      err.status = res.status
+      throw err
+    }
+    return j
+  }
+
+  async function flushQueue(){
+    if(!navigator.onLine) return
+    const queued = readQueue()
+    if(!queued.length){
+      setSyncStatus('Synced')
+      return
+    }
+    setSyncStatus(`Syncing ${queued.length} queued save(s)...`)
+    const remaining = []
+    for(const item of queued){
+      try{
+        await runSave(item)
+      }catch(_err){
+        remaining.push(item)
+      }
+    }
+    writeQueue(remaining)
+    setSyncStatus(remaining.length ? `${remaining.length} queued save(s) pending` : 'Synced')
+    await load()
+  }
 
   useEffect(()=>{
     // update clock
     const t = setInterval(()=> setNowTime(new Date()), 1000);
-    // fetch current period info
-    (async ()=>{
+
+    loadCurrentInfo()
+    load()
+    flushQueue().catch(()=>{})
+
+    const onOnline = ()=>{ flushQueue().catch(()=>{}) }
+    window.addEventListener('online', onOnline)
+
+    const poll = setInterval(()=>{ load({clearMessage:false}) }, 20000)
+
+    const wsProto = window.location.protocol === 'https:' ? 'wss' : 'ws'
+    const ws = new WebSocket(`${wsProto}://${window.location.host}/ws?token=${encodeURIComponent(token)}`)
+    ws.onmessage = (evt) => {
       try{
-        const res = await fetch('/api/current_period', {headers:{'Authorization': `Bearer ${token}`}})
-        if(!res.ok) return
-        const j = await res.json()
-        setCurrentInfo(j)
-        if(j && j.period) setPeriod(j.period)
-      }catch(e){/* ignore */}
-    })()
-    return ()=> clearInterval(t)
+        const data = JSON.parse(evt.data)
+        if(data?.requires_ack && data?.id){
+          ws.send(JSON.stringify({type:'ack', id:data.id}))
+        }
+        if(data?.type === 'letter.approved'){
+          setNotifications(prev => [
+            {id: data.id || String(Date.now()), text: `Approval received for ${data?.payload?.student_roll || 'student'}`},
+            ...prev,
+          ].slice(0, 8))
+          const affected = Array.isArray(data?.payload?.affected_periods) ? data.payload.affected_periods : []
+          const shouldReload = affected.some(a => a?.date === date && Number(a?.period_index) === Number(period))
+          if(shouldReload) load({clearMessage:false})
+        }
+        if(data?.type === 'attendance.updated'){
+          load({clearMessage:false})
+        }
+      }catch(_err){
+        // ignore malformed ws message
+      }
+    }
+
+    return ()=>{
+      clearInterval(t)
+      clearInterval(poll)
+      window.removeEventListener('online', onOnline)
+      ws.close()
+    }
   }, [token])
+
+  useEffect(()=>{
+    load({clearMessage:false})
+  }, [date, period])
 
   async function load({clearMessage = true} = {}){
     if (clearMessage) setMsg(null)
@@ -37,20 +140,18 @@ export default function TeacherPage({token}){
 
   async function save(){
     const updates = rows.map(r=>({student_roll: r.student_roll, date, period_index: period, mark: r.mark, version: r.version || 1}))
+    const payload = {updates}
     try{
-      const res = await fetch('/api/attendance', {method:'POST', headers:{'Authorization': `Bearer ${token}`, 'Content-Type':'application/json'}, body: JSON.stringify({updates})})
-      let j = null
-      try{ j = await res.json() }catch(err){ j = null }
-      if(!res.ok){
-        // handle version conflict specially
-        if(res.status === 409){
-          setMsg('Version conflict detected — reloading latest attendance...')
-          await load()
-          return
-        }
-        const detail = j && (j.detail || j.message) ? (j.detail || j.message) : (j || 'Unknown error')
-        throw new Error(typeof detail === 'object' ? JSON.stringify(detail) : String(detail))
+      if(!navigator.onLine){
+        const queued = readQueue()
+        queued.push(payload)
+        writeQueue(queued)
+        setSyncStatus(`${queued.length} queued save(s) pending`)
+        setMsg('Offline: attendance changes queued and will sync automatically')
+        return
       }
+
+      const j = await runSave(payload)
       await load({clearMessage: false})
       const updated = j && typeof j.updated === 'number' ? j.updated : updates.length
       const warningCount = j && Array.isArray(j.warnings) ? j.warnings.length : 0
@@ -61,7 +162,14 @@ export default function TeacherPage({token}){
       } else {
         setMsg(`Saved ${updated} attendance record${updated === 1 ? '' : 's'}`)
       }
-    }catch(e){setMsg('Error: '+e)}
+    }catch(e){
+      if(e?.status === 409){
+        setMsg('Version conflict detected - reloading latest attendance...')
+        await load()
+        return
+      }
+      setMsg('Error: '+e)
+    }
   }
 
   function toggle(i){
@@ -96,7 +204,35 @@ export default function TeacherPage({token}){
         </div>
       </div>
 
+      <div className="card">
+        <div className="form-inline">
+          <label>Date
+            <input type="date" value={date} onChange={e=>setDate(e.target.value)} />
+          </label>
+          <label>Period
+            <select value={period} onChange={e=>setPeriod(Number(e.target.value))}>
+              <option value={1}>P1</option>
+              <option value={2}>P2</option>
+              <option value={3}>P3</option>
+              <option value={4}>P4</option>
+              <option value={5}>P5</option>
+              <option value={6}>P6</option>
+            </select>
+          </label>
+          <div className="note">Sync status: {syncStatus}</div>
+        </div>
+      </div>
+
       {msg && <div className="note">{msg}</div>}
+
+      {!!notifications.length && (
+        <div className="card">
+          <div className="card-title">Notifications</div>
+          <div className="card-body">
+            {notifications.map(n => <div key={n.id} className="note">{n.text}</div>)}
+          </div>
+        </div>
+      )}
 
       <div className="card">
         <div className="card-title">Attendance</div>
