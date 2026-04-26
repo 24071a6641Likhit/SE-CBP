@@ -1,0 +1,132 @@
+\documentclass[12pt,a4paper]{article}
+
+% ---------------- PAGE SETUP ----------------
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ---------------- CORE PACKAGES ----------------
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{fvextra}
+
+$if(highlighting-macros)$
+$highlighting-macros$
+$endif$
+
+% -------- FIX FOR PANDOC TABLES --------
+\usepackage{caption}
+\newcounter{none} % Pandoc may set \LTcaptype to 'none' for unnumbered longtables.
+\providecommand{\pandocbounded}[1]{\begingroup\setkeys{Gin}{width=\linewidth,height=0.8\textheight,keepaspectratio}#1\endgroup}
+\captionsetup{tableposition=top}
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{8pt}
+\setcounter{tocdepth}{3}
+\captionsetup{width=\textwidth}
+\fvset{breaklines=true,breakanywhere=true}
+
+% ---------------- LIST FORMATTING ----------------
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep, topsep=3pt}
+\setlist[enumerate]{noitemsep, topsep=3pt}
+
+% ---------------- HEADERS & FOOTERS ----------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{SRS}
+\lhead{College Event Attendance System}
+\cfoot{\thepage}
+
+% ---------------- SECTION FORMATTING ----------------
+\usepackage{titlesec}
+
+\titleformat{\section}
+{\Large\bfseries}
+{\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\large\bfseries}
+{\thesubsection}{1em}{}
+
+\titleformat{\subsubsection}
+{\normalsize\bfseries}
+{\thesubsubsection}{1em}{}
+
+% Start each main section on a new page (sections only, not subsections).
+\newcommand{\sectionbreak}{\clearpage}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{4pt}
+  \setlength{\parskip}{2pt}
+}
+
+% ---------------- CODE BLOCK STYLING ----------------
+\usepackage{listings}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    breakatwhitespace=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!50!black},
+    stringstyle=\color{red},
+    showstringspaces=false
+}
+
+% ---------------- HYPERLINKS ----------------
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+% ---------------- TITLE PAGE ----------------
+\title{
+    \textbf{College Event Attendance System}\\
+    \large Software Requirement Specification Document
+}
+
+% \author{
+%     \textbf{Student} \\
+%     S. Keshava - 24071A6657 \\
+%     \\
+%     VNR Vignana Jyothi Institute of Engineering and Technology \\
+%     Department of Artificial Intelligence and Machine Learning \& Internet of Things \\
+%     Branch: CSE (AIML) \\
+%     Section: A
+% }
+
+% \date{\today}
+
+% ---------------- DOCUMENT START ----------------
+\begin{document}
+
+% ---------- TITLE ----------
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% ---------- ACKNOWLEDGEMENT (OPTIONAL) ----------
+\section*{Acknowledgement}
+I would like to express my sincere gratitude to my friend \textbf{ G. V. Vinay Krishna } for their continuous support and guidance.
+
+\newpage
+
+% ---------- TABLE OF CONTENTS ----------
+\tableofcontents
+\newpage
+
+% ---------------- MAIN CONTENT STARTS HERE ----------------
+
+$body$
+
+\end{document}

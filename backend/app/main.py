@@ -1,6 +1,7 @@
 import io
 import csv
 import json
+import re
 from pathlib import Path
 from datetime import datetime, date, time, timedelta
 from typing import Optional, List
@@ -185,6 +186,109 @@ def event_to_periods(start_dt: datetime, end_dt: datetime):
                 result.append({"date": p_start_dt.date().isoformat(), "period_index": p_index})
         current_date = current_date + timedelta(days=1)
     return result
+
+
+def classify_event_window(start_dt: datetime, end_dt: datetime):
+    affected = event_to_periods(start_dt, end_dt)
+    affected_count = len(affected)
+    unique_days = sorted({p["date"] for p in affected})
+    day_count = len(unique_days)
+
+    if day_count > 1:
+        event_type = "multi_day"
+    elif affected_count <= 3:
+        event_type = "half_day_or_less"
+    else:
+        event_type = "one_day"
+
+    duration_hours = affected_count
+    if event_type == "half_day_or_less":
+        summary = f"{duration_hours} hour(s) window"
+    elif event_type == "one_day":
+        summary = "1 day"
+    else:
+        summary = f"{day_count} day(s)"
+
+    return {
+        "event_type": event_type,
+        "duration_hours": duration_hours,
+        "day_count": day_count,
+        "affected_periods": affected,
+        "summary": summary,
+    }
+
+
+def roll_to_section(roll: Optional[str]):
+    if not roll:
+        return "Unknown"
+    match = re.search(r"[A-Za-z]\d{2}", roll)
+    if match:
+        return match.group(0).upper()
+    if len(roll) >= 8:
+        return roll[5:8].upper()
+    return roll[:4].upper()
+
+
+def build_letter_response(letter: models.Letter):
+    meta = classify_event_window(letter.start_datetime, letter.end_datetime)
+    approved_by = letter.approved_by
+    approved_at = letter.approved_at.isoformat() if letter.approved_at else None
+    return {
+        "id": letter.id,
+        "student_roll": letter.student_roll,
+        "student_name": letter.student_name,
+        "event_name": letter.event_name,
+        "content": letter.content,
+        "start_datetime": letter.start_datetime.isoformat(),
+        "end_datetime": letter.end_datetime.isoformat(),
+        "status": letter.status,
+        "submitted_at": letter.submitted_at.isoformat(),
+        "coordinator_comment": letter.coordinator_comment,
+        "approved_at": approved_at,
+        "approved_by": approved_by,
+        "event_type": meta["event_type"],
+        "duration_hours": meta["duration_hours"],
+        "day_count": meta["day_count"],
+        "affected_periods": meta["affected_periods"],
+        "event_summary": meta["summary"],
+        "section": roll_to_section(letter.student_roll),
+    }
+
+
+def find_approved_permission_letter(db: Session, student_roll: str, adate: date, period_index: int):
+    day_start = datetime.combine(adate, time.min)
+    day_end = datetime.combine(adate, time.max)
+    letters = (
+        db.query(models.Letter)
+        .filter(
+            models.Letter.student_roll == student_roll,
+            models.Letter.status == "Approved",
+            models.Letter.start_datetime <= day_end,
+            models.Letter.end_datetime >= day_start,
+        )
+        .order_by(models.Letter.submitted_at.desc())
+        .all()
+    )
+
+    for letter in letters:
+        affected = event_to_periods(letter.start_datetime, letter.end_datetime)
+        match = next((p for p in affected if p["date"] == adate.isoformat() and p["period_index"] == period_index), None)
+        if match:
+            meta = classify_event_window(letter.start_datetime, letter.end_datetime)
+            return {
+                "id": letter.id,
+                "event_name": letter.event_name,
+                "content": letter.content,
+                "start_datetime": letter.start_datetime.isoformat(),
+                "end_datetime": letter.end_datetime.isoformat(),
+                "approved_at": letter.approved_at.isoformat() if letter.approved_at else None,
+                "approved_by": letter.approved_by,
+                "coordinator_comment": letter.coordinator_comment,
+                "event_type": meta["event_type"],
+                "event_summary": meta["summary"],
+                "affected_periods": affected,
+            }
+    return None
 
 
 def get_current_period(now_dt: Optional[datetime] = None):
@@ -596,7 +700,7 @@ def list_letters(
         rows = db.query(models.Letter).filter_by(student_roll=st.roll_number).order_by(models.Letter.submitted_at.desc()).limit(limit).all()
     else:
         raise HTTPException(status_code=403, detail="Insufficient privileges")
-    return [{"id": r.id, "student_roll": r.student_roll, "student_name": r.student_name, "event_name": r.event_name, "content": r.content, "start_datetime": r.start_datetime.isoformat(), "end_datetime": r.end_datetime.isoformat(), "status": r.status, "submitted_at": r.submitted_at.isoformat()} for r in rows]
+    return [build_letter_response(r) for r in rows]
 
 
 @app.get("/api/letters/{letter_id}")
@@ -612,7 +716,56 @@ def get_letter(letter_id: str, db: Session = Depends(get_db), current_user=Depen
             raise HTTPException(status_code=403, detail="Not allowed")
     else:
         raise HTTPException(status_code=403, detail="Not allowed")
-    return {"id": letter.id, "student_roll": letter.student_roll, "student_name": letter.student_name, "event_name": letter.event_name, "content": letter.content, "start_datetime": letter.start_datetime.isoformat(), "end_datetime": letter.end_datetime.isoformat(), "status": letter.status, "submitted_at": letter.submitted_at.isoformat(), "coordinator_comment": letter.coordinator_comment}
+    return build_letter_response(letter)
+
+
+@app.get("/api/teacher/letters")
+def teacher_letters(
+    date_str: str = Query(..., alias="date"),
+    period: Optional[int] = Query(None, alias="period"),
+    roll: Optional[str] = None,
+    section: Optional[str] = None,
+    status: str = "Approved",
+    limit: int = 300,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    if current_user.role != "teacher":
+        raise HTTPException(status_code=403, detail="Only teacher can access this endpoint")
+
+    try:
+        adate = date.fromisoformat(date_str)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid date, use YYYY-MM-DD")
+
+    q = db.query(models.Letter)
+    if status:
+        q = q.filter(models.Letter.status == status)
+    if roll:
+        q = q.filter(models.Letter.student_roll == roll.strip())
+
+    day_start = datetime.combine(adate, time.min)
+    day_end = datetime.combine(adate, time.max)
+    q = q.filter(models.Letter.start_datetime <= day_end, models.Letter.end_datetime >= day_start)
+
+    rows = q.order_by(models.Letter.submitted_at.desc()).limit(limit).all()
+    filtered = []
+    for row in rows:
+        item = build_letter_response(row)
+        if section and item["section"].lower() != section.lower():
+            continue
+        if period is not None:
+            has_period = any(p["date"] == adate.isoformat() and int(p["period_index"]) == int(period) for p in item["affected_periods"])
+            if not has_period:
+                continue
+        filtered.append(item)
+
+    buckets = {}
+    for item in filtered:
+        bucket = item["section"]
+        buckets.setdefault(bucket, []).append(item)
+
+    return {"date": adate.isoformat(), "period": period, "total": len(filtered), "buckets": buckets, "letters": filtered}
 
 
 @app.post("/api/letters/{letter_id}/reject")
@@ -678,7 +831,18 @@ def get_attendance(date_str: str = Query(..., alias="date"), period: int = Query
         source = attendance.source if attendance else "Manual"
         version = attendance.version if attendance else None
         updated_at = attendance.updated_at.isoformat() if attendance and attendance.updated_at else None
-        result.append({"student_roll": s.roll_number, "student_name": s.name, "mark": mark, "source": source, "version": version, "updated_at": updated_at})
+        permission_letter = find_approved_permission_letter(db, s.roll_number, adate, period)
+        result.append({
+            "student_roll": s.roll_number,
+            "student_name": s.name,
+            "mark": mark,
+            "source": source,
+            "version": version,
+            "updated_at": updated_at,
+            "section": roll_to_section(s.roll_number),
+            "has_permission_letter": bool(permission_letter),
+            "permission_letter": permission_letter,
+        })
     return result
 
 
